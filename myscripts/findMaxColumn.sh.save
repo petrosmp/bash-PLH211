@@ -1,0 +1,21 @@
+#!bin/bash
+
+maxSum=0 #declare a variable to store the maxSum and set it to 0 (so that the first sum calculated will always be set as maxSum)
+maxFile=""
+for arg in $*
+do
+	printf "\nFILE: %s" $arg
+	while IFS= read -r line
+	do
+		num1=${line%:*}
+		num2=${line#*:}
+		sum=$(($num1+$num2))
+		if [ $sum -ge $maxSum ]
+		then
+			maxSum=$sum
+			maxFile=$arg
+		fi
+	done < "$arg"
+	printf "" $arg $maxSum
+done
+

@@ -1,0 +1,38 @@
+chown (change ownership) usage: chown <user>:<group>
+
+=chmod (change mode) usage: chmod <mode#> <filename> or chmod +<r/w/x> <filename>  modes: 6->readable/writeable 4->readable 7->directory (not used with single files)
+chown -R <user>:<group> ./<directory name> gives <user> and <group> ownership of E V E R Y T H I N G in <directory>
+find <directory> -type f (file) -name (or iname to Ignore case sensitivity) "<filename>" (-perms 0XXX like 0644 or sth to find by permissions) (-size <size> to find by size) (can use NOT operator -not <arguments> like -not -iname "*.txt" )
+GREP:
+	grep "<what you're looking for>" <what files you're looking for it in>	
+	grep -i (ignore case)  
+	grep -n (gives the number of the line in which your string is found)
+
+WE CAN EXECUTE COMMANDS ON OTHER COMMANDS WITH -exec
+	example: find . -type f -iname "*.txt" -exec grep -i -n "function" {} +
+    explanation: command1 with flags and stuff -EXEC command 2 etc         {} + used to end the -exec flag (anything between -exec and  {} + is executed)
+
+tee <outfile> (usually used at the end of other commands with | before it) pipes the output of the command to <outfile> and also prints it to stdo
+
+unzip:			tar xvf <filename.tar> for .tar files
+			tar zxvf <filename.tar.gz> for .tar.gz files
+			zcat for a list of contents without unzipping
+
+zip:			tar zcvf <compressedFile.tar.gz> <filesToCompress>
+
+
+replacing characters:	tr command -> replaces a set of characters SET1 with SET2. last character of SET2 repeats itself if SET2 < SET1
+			tr -d to delete set1 characters
+			tr -s to replace a lot of same characters of a set with ONE character (the same) 
+			examples:
+				tr acbdef ijklm < test1	(replaces a with i, c with j etc in test1)
+				tr -d '[i-l]s' <test1	(deletes i j k l and s in test1)
+				
+removing collumns:	colrm <col#1> <col#2> ... <col#n> < <file>
+
+
+to print collumns of a file:	awk '{print $1,$2 ...}'
+to print line x of a file:	head -x filename | tail -1
+to print lines x-y of a file:	sed -n x,yp filename
+to print lines x,y of a file:	sed -n -e xp -e yp file
+

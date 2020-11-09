@@ -1,0 +1,81 @@
+Thema 1
+a) cat /usr/include/stdio.h
+b) cat /usr/include/stdio.h | awk '{print $3, $4, $5, $6 }'		(OR JUST THE AWK COMMAND ITH THE FILENAME IN THE END)
+c) cat input.4col | tr "-" "\t" | tr ":" "\t" > output.4col		(| tee output.4col instead of > output.4col if we want it in stdout too)
+d) sort +0 -1 output.4col | sort +2 -3					(what it is actually asking for is "sort +0 -1 output.4col | sort -n +2 -3" but it produces a weird/wrong output)
+e) sort +1 -2 output.4col | head -n 2
+f) sort -n +3 -4 output.4col | head -n 2				(instead of +x -y we can use the -k param and just say like -k2 if we want to sort by the second collumn)
+g) cat output.4col | awk '{print $1, $3 }'
+h) ls -l /usr/include | awk '{ print $1, $9 }'
+i) for file in /usr/include/*io*; do head -n 1 $file ; done		(returns 7 first lines, and ls /usr/include/*io* returns 7 files so we assume it is correct)
+j) touch emptyFile
+k) chmod 646 emptyFile							(or chmod +r/w/x or anything)
+
+Thema 2
+
+#!bin/bash
+
+maxSum=0 #declare a variable to store the maxSum and set it to 0 (so that the first sum calculated will always be set as maxSum)
+
+for arg in $*
+do
+        printf "\nFILE: %s" ${arg}
+        while IFS= read -r line
+        do
+                num1=${line%:*}
+                num2=${line#*:}
+                sum=$(($num1+$num2))
+                if [ $sum -ge $maxSum ]
+                then
+                        maxSum=$sum
+                fi
+        done < "$arg"
+        printf "\nFile %s ended and max sum is %2d\n\n" $arg $maxSum
+done
+
+
+
+Thema 3
+
+#!bin/bash
+
+for arg in $*
+do
+        maxbef=0
+        maxaft=0
+        lines=0
+        while IFS= read -r line
+        do
+                #firstly, split the float into 2 integers
+                beforePoint=${line%.*}
+                afterPoint=${line#*.}
+                #check if the first int is greater than the first part of the greatest float. If they are equal AND their second parts are equal, or the 2nd part of the line's float is greater than that of the greatest, the greatest is replaced
+                if [ $beforePoint -gt $maxbef ]; then
+                        maxbef=$beforePoint
+                        maxaft=$afterPoint
+                elif [ $beforePoint -eq $maxbef ]; then
+                        if [ $afterPoint -ge $maxaft ];then
+                                maxbef=$beforePoint
+                                maxaft=$afterPoint
+                        fi
+                fi
+                #assign the values of the line to minbef and minaft if its the first line
+                if [ $lines == 0 ]; then
+                        minbef=$beforePoint
+                        minaft=$afterPoint
+                fi
+                #process same as before, only reversed to work for smallest floats
+                if [ $beforePoint -lt $minbef ]; then
+                        minbef=$beforePoint
+                        minaft=$afterPoint
+                elif [ $beforePoint -eq $minbef ]; then
+                        if [ $afterPoint -le $minaft ];then
+                                minbef=$beforePoint
+                                minaft=$afterPoint
+                        fi
+                fi
+                #number of lines goes up by one
+                lines=$(($lines+1))
+        done < "$arg"
+        printf "FILE: %s,\tlines: %d,\tmax=%d.%d,\tmin=%d.%d\n" $arg $lines $maxbef $maxaft $minbef $minaft
+done

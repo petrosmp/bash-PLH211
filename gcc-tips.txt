@@ -1,0 +1,116 @@
+gcc -Wall:	
+			returns a lot of warnings for potential errors.
+			ALWAYS USE IT!!!!!!
+			NEVER IGNORE WARNINGS!!!!!
+		
+gcc -c:
+			only produces the assembly code file .o
+
+gcc -o:
+			defines the name of the produced file
+gcc -g:		
+			flag that helps in finding errors while debugging in gdb (remove the flag after the program is checked)
+Optimization flags:
+			gcc -O
+			gcc -O2 (-O2 is usually good enough)
+			gcc -O3
+
+example:		gcc -O2 -o myprogram myprogram.c
+
+
+
+separate compilation with gcc:
+it's more productive to organize the compilation in makefiles so that anything that hasn't been modified isn't compiled.
+example:
+		gcc -c main.c
+		gcc -c LinkedList.c
+		gcc -c OrderedLinkedList.c
+		gcc main.o LinkedList.o OrederedLinkedList.o -o myexe
+		./myexe 
+makefile:
+makes organizing separate compilation easier.
+each makefile command has the following syntax:
+	<target>:<required-files>
+	<TAB><command>
+	
+	example:
+		main:main.o file.o
+			gcc -o main.o file.o
+	
+	NOTES:
+	THE INDEXATION BEFORE THE COMMAND IS N E C E S S A R Y !!!!!
+	required-files must be implemented before the target is computed (?) [ta reuqired-files prepei na ylopoihthoun prin ypologistei o stoxos]
+	if the required-files haven't changed, the makefile command isn't executed (up to date)
+	the final target of a makefile is usually named "all"
+	usually, there is a command named "clean" that deletes all the .o and the executable files
+	
+
+	MAKEFILE EXAMPLE:
+
+	#in order to execute this makefile just type "make"
+	
+	OBJS	= main.o LinkedList.o OrderedLinkedList.o
+	SOURCE	= main.c LinkedList.c OrderedLinkedList.c
+	HEADER	= MyHeader.h LinkedList.h OrderedLinkedList.h
+	OUT	= myexe
+	CC	= gcc
+	FLAGS	= -g -c
+
+	#-g for debugging mode; -c for objects file creation
+	
+	$(OUT): $(OBJS)
+		$(CC) $(FLAGS) main.c
+
+	#create/compile the individual files >>S E P A R A T E L Y<<
+	
+	main.o: main.c
+		$(CC) $(FLAGS) main.c
+
+	LinkedList.o: LinkedList.c
+		$(CC) $(FLAGS) LinkedList.c
+	
+	OrderedLinkedList.o: OrderedLinkedList.c
+		$(CC) $(FLAGS) OrderedLinkedList.c
+	
+	#clean house
+	
+	clean:
+		rm -f $(OBJS) $(OUT)
+	
+	#do a bit of counting
+	
+	count:
+		wc $(SOURCE) $(HEADER)
+
+
+	#END OF FILE
+
+	NOTES:
+		$(OBJS) is the same as ${OBJS}
+		$? list of prequisites
+		$a current target
+		ar creation of static library
+
+
+
+
+Q&A
+
+1)How do we make sure that a .h file is only compiled once?
+	A: We enclose its contents in #ifndef commands, like so:
+		#ifndef FILE_H
+		#define FILE_H
+		/* ... Declarations etc here ... */
+		#endif
+
+2)Can we pass arguments to an executable C file?
+	A:Of course. We pass those arguments like we would with any other program/command, like so:
+		./myexe arg1 arg2 
+
+	To access them in the program, we declare the main function like so:
+		int main(int argc, char *argc[])
+	then,	argc	= num_of_args + 1
+		argv[0] = name_of_the_executable (e.g.: myexe)
+		argv[i] = argument #i
+ 
+	

@@ -1,0 +1,16 @@
+#!bin/bash
+
+rand() {
+  perl -E '$ARGV[0]||=""; $ARGV[0]=int($ARGV[0])||length($ARGV[0]); say join "", int(rand(9)+1)*($ARGV[0]?1:0), map { int(rand(10)) } (0..($ARGV[0]||0)-2)' $1
+}
+for i in {0..4}
+do	for numOfLines in {0..($RANDOM%500)}
+		do
+			if $((RANDOM%2))
+				then
+					echo -$(rand 2):$(rand 2) >> file{$(i)}.txt
+				else
+					echo $(rand 2):$(rand 2) >> file{$(i)}.txt
+			fi
+	done
+done

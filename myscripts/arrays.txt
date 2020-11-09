@@ -1,0 +1,9 @@
+array=(arr1 arr2 .... arrN)
+
+${array[@]}	-> all the elements of the array
+${array[i]}	-> i'th element of the array
+${!array[@]}	-> index'es of the array
+${!array[i]}	-> index of the i'th element
+${!array[@]}	-> length of the array
+unset array[i]	-> deletes an element
+array[i]=	-> creates a new element at i
